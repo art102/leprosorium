@@ -13,9 +13,14 @@ before do
 	init_db
 end
 
-# Этот код вызывается, когда мы обновляем страницу или изменяем конфигурацияю
+# configure вызывается каждый раз при конфигурации приложения:
+# когда изменился код программы И перезагрузилась страница
 configure do
+	# инициализация базы данных
+
 	init_db
+
+	# создаёт таблицу , если её не существует
 	@db.execute 'CREATE TABLE IF NOT EXISTS Posts
 	(
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
