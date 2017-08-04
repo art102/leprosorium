@@ -35,7 +35,8 @@ configure do
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		created_date DATE, 
 		content TEXT,
-		post_id INTEGER
+		post_id INTEGER,
+		username TEXT
 	)'
 
 end
@@ -67,6 +68,25 @@ post '/new' do
 
   # сохранение данных в БД
   @db.execute 'insert into Posts (content, created_date) values (?, datetime())', [content]
+
+  username = params[:username]
+  post_id = params[:post_id]
+
+  # сохранение имени пользователя в БД
+  @db.execute 'insert into Comments
+		(
+			content, 
+			created_date, 
+			post_id,
+			username
+		) 
+			values 
+		(
+			?, 
+			datetime(), 
+			?,
+			?
+		)', [content, post_id, username]
 
   redirect '/'
 end
