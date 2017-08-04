@@ -27,7 +27,8 @@ configure do
 	(
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		created_date DATE, 
-		content TEXT
+		content TEXT,
+		username TEXT
 	)'
 
 	@db.execute 'CREATE TABLE IF NOT EXISTS Comments
@@ -35,8 +36,7 @@ configure do
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		created_date DATE, 
 		content TEXT,
-		post_id INTEGER,
-		username TEXT
+		post_id INTEGER
 	)'
 
 end
@@ -60,6 +60,7 @@ end
 post '/new' do
 
   content = params[:content]
+  username = params[:username]
 
   if content.size <= 0
   	@error = 'Please enter text'
@@ -67,26 +68,7 @@ post '/new' do
   end
 
   # сохранение данных в БД
-  @db.execute 'insert into Posts (content, created_date) values (?, datetime())', [content]
-
-  username = params[:username]
-  post_id = params[:post_id]
-
-  # сохранение имени пользователя в БД
-  @db.execute 'insert into Comments
-		(
-			content, 
-			created_date, 
-			post_id,
-			username
-		) 
-			values 
-		(
-			?, 
-			datetime(), 
-			?,
-			?
-		)', [content, post_id, username]
+  @db.execute 'insert into Posts (content, created_date, username) values (?, datetime(), ?)', [content, username]
 
   redirect '/'
 end
